@@ -1,6 +1,6 @@
 var timerTimeout;
 var timerProgressBar;
-var totalSecondsVar = 20;
+var totalSecondsVar = 15;
 var numLetters = 15;
 var gridRows = 3;
 var gridCols = 6;

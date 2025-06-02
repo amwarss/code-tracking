@@ -96,33 +96,33 @@ end
 
 QBCore.Functions.CreateCallback('code:tracking:checkPlayerByPhone', function(source, cb, phoneNumber)
     if not phoneNumber or type(phoneNumber) ~= 'string' then
-        return cb(false, nil, false, nil, 'رقم هاتف غير صحيح')
+        return cb(false, nil, false, nil, 'Invalid phone number')
     end
     
     phoneNumber = string.gsub(phoneNumber, '%D', '')
     if string.len(phoneNumber) ~= Config.phoneNumber then
-        return cb(false, nil, false, nil, 'رقم الهاتف يجب أن يكون ' .. Config.phoneNumber .. ' أرقام')
+        return cb(false, nil, false, nil, 'Phone number must be ' .. Config.phoneNumber .. ' أرقام')
     end
     
     local result = MySQL.query.await('SELECT owner_id FROM phone_phones WHERE phone_number = ?', {phoneNumber})
     if not result or #result == 0 then 
-        LogTrackingAttempt(source, nil, phoneNumber, false, 'رقم هاتف غير مسجل')
-        return cb(false, nil, false, nil, 'رقم الهاتف غير مسجل في النظام') 
+        LogTrackingAttempt(source, nil, phoneNumber, false, 'Unregistered phone number')
+        return cb(false, nil, false, nil, 'The phone number is not registered in the system.') 
     end
 
     local ownerId = result[1].owner_id
     local target = QBCore.Functions.GetPlayerByCitizenId(ownerId)
     if not target then 
-        LogTrackingAttempt(source, nil, phoneNumber, false, 'المالك غير متصل')
-        return cb(false, nil, false, nil, 'مالك الهاتف غير متصل حالياً') 
+        LogTrackingAttempt(source, nil, phoneNumber, false, 'Owner is offline')
+        return cb(false, nil, false, nil, 'The phone owner is currently offline.') 
     end
 
     local targetName = target.PlayerData.charinfo.firstname .. ' ' .. target.PlayerData.charinfo.lastname
     
     local hasPhone = target.Functions.GetItemByName('phone')
     if not hasPhone or hasPhone.amount <= 0 then
-        LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'الهاتف ليس مع الهدف')
-        return cb(false, nil, false, nil, 'الهدف لا يحمل هاتفه معه')
+        LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'The phone is not with the target')
+        return cb(false, nil, false, nil, 'The target does not have his phone with him.')
     end
     
     local phoneOnNetwork = true
@@ -132,19 +132,19 @@ QBCore.Functions.CreateCallback('code:tracking:checkPlayerByPhone', function(sou
         if phoneData and phoneData.battery then
             if phoneData.battery <= 0 then
                 phoneOnNetwork = false
-                LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'بطارية الهاتف فارغة')
-                return cb(false, nil, false, nil, 'هاتف الهدف مغلق - البطارية فارغة')
+                LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'Phone battery is empty')
+                return cb(false, nil, false, nil, 'Target phone is off - battery dead')
             end
         end
         
         if phoneData and phoneData.airplane_mode then
             phoneOnNetwork = false
-            LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'الهاتف في وضع الطيران')
-            return cb(false, nil, false, nil, 'هاتف الهدف في وضع الطيران')
+            LogTrackingAttempt(source, target.PlayerData.source, phoneNumber, false, 'The phone is in airplane mode')
+            return cb(false, nil, false, nil, 'Target phone in airplane mode')
         end
     end
     
-    cb(true, target.PlayerData.source, phoneOnNetwork, targetName, 'نجح العثور على الهدف')
+    cb(true, target.PlayerData.source, phoneOnNetwork, targetName, 'Successfully finding the target')
 end)
 
 QBCore.Functions.CreateUseableItem(Config.TrackerItem, function(source)

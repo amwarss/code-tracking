@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="ui-container" id="trackerUI">
+        <div class="phone-container">
+            <div class="screen">
+                <div class="close-button" onclick="closeUI()">&times;</div>
+                <div class="map-background"></div>
+                <div class="grid-overlay"></div>
+                
+                <div class="header">
+                    <div class="title">MILTECH TRACKER</div>
+                    <div class="subtitle">CLASSIFIED SYSTEM</div>
+                </div>
+                
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-dot"></div>
+                        <span>ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-dot"></div>
+                        <span>ENCRYPTED</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-dot"></div>
+                        <span>SECURE</span>
+                    </div>
+                </div>
+                
+                <div class="tracking-form">
+                    <div class="input-group">
+                        <label class="input-label">TARGET PHONE NUMBER</label>
+                        <input type="tel" class="phone-input" id="phoneNumber" placeholder="XXXXXXXXXX" maxlength="10">
+                    </div>
+                    
+                    <button class="track-button" onclick="startTracking()">
+                        INITIATE TRACKING
+                    </button>
+                </div>
+                
+                <div class="radar-container">
+                    <div class="radar-circle"></div>
+                    <div class="radar-circle"></div>
+                    <div class="radar-circle"></div>
+                    <div class="radar-circle"></div>
+                    <div class="radar-sweep"></div>
+                </div>
+                
+                <div class="info-panel">
+                    <div class="info-item">
+                        <span class="info-label">STATUS:</span>
+                        <span class="info-value" id="trackingStatus">STANDBY</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">SIGNAL:</span>
+                        <span class="info-value">STRONG</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">ENCRYPTION:</span>
+                        <span class="info-value">AES-256</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">CLEARANCE:</span>
+                        <span class="info-value">LEVEL 5</span>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    ESTABLISHING CONNECTION...
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

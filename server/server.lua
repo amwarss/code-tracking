@@ -247,18 +247,40 @@ end
 
 local function SearchPhoneInDatabase(phoneNumber)
     local results = {}
+    
     if Config.PhoneSystem == 'lb-phone' or Config.PhoneSystem == 'both' then
         local lbResult = MySQL.query.await('SELECT owner_id FROM phone_phones WHERE phone_number = ?', {phoneNumber})
         if lbResult and #lbResult > 0 then
             table.insert(results, {system = 'lb-phone', owner_id = lbResult[1].owner_id})
         end
     end
+    
     if Config.PhoneSystem == 'qb-phone' or Config.PhoneSystem == 'both' then
-        local qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE phone = ?', {phoneNumber})
+        local qbResult = nil
+        
+        qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE JSON_EXTRACT(charinfo, "$.phone") = ?', {phoneNumber})
+        
+        if not qbResult or #qbResult == 0 then
+            qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE phone = ?', {phoneNumber})
+        end
+        
+        if not qbResult or #qbResult == 0 then
+            qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE charinfo LIKE ?', {'%"phone":"' .. phoneNumber .. '"%'})
+        end
+        
+        if not qbResult or #qbResult == 0 then
+            qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE JSON_UNQUOTE(JSON_EXTRACT(charinfo, "$.phone")) = ?', {phoneNumber})
+        end
+        
+        if not qbResult or #qbResult == 0 then
+            qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE JSON_EXTRACT(metadata, "$.phone") = ?', {phoneNumber})
+        end
+        
         if qbResult and #qbResult > 0 then
             table.insert(results, {system = 'qb-phone', owner_id = qbResult[1].citizenid})
         end
     end
+    
     return results
 end
 

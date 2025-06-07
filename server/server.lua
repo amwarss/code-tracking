@@ -94,6 +94,26 @@ local function IsSpamming(source)
     return false
 end
 
+local function SearchPhoneInDatabase(phoneNumber)
+    local results = {}
+    
+    if Config.PhoneSystem == 'lb-phone' or Config.PhoneSystem == 'both' then
+        local lbResult = MySQL.query.await('SELECT owner_id FROM phone_phones WHERE phone_number = ?', {phoneNumber})
+        if lbResult and #lbResult > 0 then
+            table.insert(results, {system = 'lb-phone', owner_id = lbResult[1].owner_id})
+        end
+    end
+    
+    if Config.PhoneSystem == 'qb-phone' or Config.PhoneSystem == 'both' then
+        local qbResult = MySQL.query.await('SELECT citizenid FROM player_phones WHERE phone_number = ?', {phoneNumber})
+        if qbResult and #qbResult > 0 then
+            table.insert(results, {system = 'qb-phone', owner_id = qbResult[1].citizenid})
+        end
+    end
+    
+    return results
+end
+
 QBCore.Functions.CreateCallback('code:tracking:checkPlayerByPhone', function(source, cb, phoneNumber)
     if not phoneNumber or type(phoneNumber) ~= 'string' then
         return cb(false, nil, false, nil, 'Invalid phone number')

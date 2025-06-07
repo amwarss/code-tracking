@@ -1,6 +1,3 @@
-![Image](https://github.com/user-attachments/assets/a8bfb609-232b-43b5-ac5a-298270a01efd)
-![Image](https://github.com/user-attachments/assets/b81cbb32-2dab-45b9-afd7-febbff55c154)
-
 create by codescript - Team
 discord:https://discord.gg/codescripts
 
@@ -76,6 +73,8 @@ Then, go to the JavaScript file, and change the variable PHONE_DIGITS found on l
 اخرجه للريسورس خارج السكربت لكي تعمل الميني قيم
 
 
+![Image](https://github.com/user-attachments/assets/a8bfb609-232b-43b5-ac5a-298270a01efd)
+![Image](https://github.com/user-attachments/assets/b81cbb32-2dab-45b9-afd7-febbff55c154)
 
 
 © Code Script . All Rights Reserved.

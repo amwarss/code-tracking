@@ -101,17 +101,28 @@ QBCore.Functions.CreateCallback('code:tracking:checkPlayerByPhone', function(sou
     
     phoneNumber = string.gsub(phoneNumber, '%D', '')
     if string.len(phoneNumber) ~= Config.phoneNumber then
-        return cb(false, nil, false, nil, 'Phone number must be ' .. Config.phoneNumber .. ' أرقام')
+        return cb(false, nil, false, nil, 'Phone number must be ' .. Config.phoneNumber .. ' digits')
     end
     
-    local result = MySQL.query.await('SELECT owner_id FROM phone_phones WHERE phone_number = ?', {phoneNumber})
-    if not result or #result == 0 then 
+    local searchResults = SearchPhoneInDatabase(phoneNumber)
+    
+    if not searchResults or #searchResults == 0 then 
         LogTrackingAttempt(source, nil, phoneNumber, false, 'Unregistered phone number')
-        return cb(false, nil, false, nil, 'The phone number is not registered in the system.') 
+        return cb(false, nil, false, nil, 'The phone number is not registered in any system.') 
     end
 
-    local ownerId = result[1].owner_id
-    local target = QBCore.Functions.GetPlayerByCitizenId(ownerId)
+    local target = nil
+    local phoneSystem = nil
+    
+    for _, result in ipairs(searchResults) do
+        local tempTarget = QBCore.Functions.GetPlayerByCitizenId(result.owner_id)
+        if tempTarget then
+            target = tempTarget
+            phoneSystem = result.system
+            break
+        end
+    end
+    
     if not target then 
         LogTrackingAttempt(source, nil, phoneNumber, false, 'Owner is offline')
         return cb(false, nil, false, nil, 'The phone owner is currently offline.') 
@@ -144,7 +155,7 @@ QBCore.Functions.CreateCallback('code:tracking:checkPlayerByPhone', function(sou
         end
     end
     
-    cb(true, target.PlayerData.source, phoneOnNetwork, targetName, 'Successfully finding the target')
+    cb(true, target.PlayerData.source, phoneOnNetwork, targetName, 'Successfully found target in ' .. phoneSystem)
 end)
 
 QBCore.Functions.CreateUseableItem(Config.TrackerItem, function(source)

@@ -254,7 +254,7 @@ local function SearchPhoneInDatabase(phoneNumber)
         end
     end
     if Config.PhoneSystem == 'qb-phone' or Config.PhoneSystem == 'both' then
-        local qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE phone_number = ?', {phoneNumber})
+        local qbResult = MySQL.query.await('SELECT citizenid FROM players WHERE phone = ?', {phoneNumber})
         if qbResult and #qbResult > 0 then
             table.insert(results, {system = 'qb-phone', owner_id = qbResult[1].citizenid})
         end

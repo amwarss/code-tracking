@@ -17,7 +17,19 @@ Config = {
         'military'
     },
 
+    PhoneSystem = 'lb-phone', -- Options: 'lb-phone', 'qb-phone'
 
+    -- Phone Database
+    PhoneDatabase = {
+        ['lb-phone'] = {
+            table = 'phone_phones',
+            owner_column = 'owner_id'
+    },
+        ['qb-phone'] = {
+            table = 'player_phones', 
+            owner_column = 'citizenid'
+        }
+    },
     
     -- Special Ranks System (optional)
     AllowSpecialRanks = true,

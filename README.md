@@ -55,6 +55,9 @@ or old
 From here, you define how many digits your phone number should have.
 For example: if you want the phone number to be 10 digits, set it here.
 
+Work with lb-phone and qb-phone
+
+
 To modify this setting, do the following:
 
 Go to the config file, find the variable phoneNumber, and change it to the desired number of digits.
